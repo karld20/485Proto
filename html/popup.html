@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Popup for Sub Menus</title>
+    <script src="../scripts/proto.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <h2>Placeholder Details</h2>
+    <div class="slidecontainer">
+        <input type="range" min="1" max="100" value="50" class="slider" id="brightness" step="5">
+        <ul class="description">
+            <li class="dim">Dimmest</li>
+            <li class="bright">Brightest</li>
+        </ul>
+        <input type="range" min="1" max="100" value="50" class="slider" id="chromatic" step="5">
+        <ul class="description">
+            <li class="white">White</li>
+            <li class="black">Black</li>
+        </ul>
+    </div>
+    <div class="container">
+        <div class="menu-options">
+            <div class="btn"><button class="btn" id="btnSubmit"><a href="index.html">Submit</a></button></div>
+            <div class="btn" style="margin-top:10px;"><button class="btn" id="btnCancel"><a href="index.html">Cancel</a></button></div>
+        </div>
+    </div>
+</body>
+</html>

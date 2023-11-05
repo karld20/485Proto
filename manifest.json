@@ -1,0 +1,19 @@
+{
+  "name": "ADA Web Toolbox Prototype",
+  "version": "1.0",
+  "manifest_version": 3,
+  "description": "Prototype For Capstone - ADA Web Toolbox",
+  "action": {
+    "default_icon": "images/UI_Logo.png",
+    "default_popup": "html/index.html"
+  },
+  "permissions": [
+    "tabs",
+    "scripting",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "http://*/*",
+    "https://*/*"
+  ]
+}
