@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //currently unused event handler
     btnAI.addEventListener('click',()=>{
-
+        runScript(getTextInstances());
     });
 
     //function that gets the current tab you're on then injects the CSS passed in the function
@@ -65,22 +65,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 target: {
                     tabId: tab.id
                 }
-            }).then(() => console.log(picked));
+            }).then(() => btnAI.innerText = `${tab.id}`);
         } catch (e) {
             console.error(e);
             btnAI.innerText = 'Injection failed.';
         }
 
-        console.log(`${css}`);
+    }
 
+
+    async function runScript(funct) {
+        let queryOptions = {active: true, lastFocusedWindow: true};
+        // `tab` will either be a `tabs.Tab` instance or `undefined`.
+        let [tab] = await chrome.tabs.query(queryOptions);
+
+        chrome.scripting
+            .executeScript({
+                target : {tabId : tab.id},
+                func : funct,
+            })
+            .then(() => console.log ("injected a function"));
     }
 
     //unused function for if I was able to split up getting the tab & injectcss tasks
-    function getTabId(){
+    async function getTabId(){
         let queryOptions = { active: true, lastFocusedWindow: true };
         // `tab` will either be a `tabs.Tab` instance or `undefined`.
         let [tab] = chrome.tabs.query(queryOptions);
-        return tab[0];
+
+        console.log(tab.id);
+    }
+
+    function getTextInstances(){
+        let textInstances = document.querySelectorAll("h1");
+        textInstances.forEach(function(entry){
+            console.log(entry.innerText);
+        });
+        btnColor.innerText = `${textInstances[0].innerText}`;
+        textInstances[0].style.fontSize = `5px`;
+
     }
 
 });
