@@ -5,12 +5,68 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnSubmit = document.getElementById("btnSubmit");
     const colorPick = document.getElementById("colorpicker");
     const fntSelect = document.getElementById("fonts");
+    const btnDecrease = document.getElementById("btnDecrease");
+    const btnIncrease = document.getElementById("btnIncrease");
     let picked = "";
     let backgroundCSS = ``;
     let fontCSS = "";
     let fontID = "";
     let fontName = "";
+    let fontSize;
+    let tempFontSize;
+    const storage = chrome.storage.local;
+    const btnSave = document.getElementById('btnSave');
+    const btnLoad = document.getElementById('btnLoad');
+    const txtOut = document.getElementById('txtOut');
+    const btnClear = document.getElementById('btnClear');
 
+    btnSave.addEventListener('click',async () => {
+        chrome.storage.local.set({ colorKey: picked }).then(() => {
+            console.log("Value is set");
+        });
+
+        chrome.storage.local.set({ fontKey: fontID }).then(() => {
+            console.log("Value is set");
+        });
+    });
+
+    btnClear.addEventListener('click',()=>{
+        chrome.storage.local.clear();
+    });
+
+    btnLoad.addEventListener('click',()=>{
+        chrome.storage.local.get(["colorKey"]).then((result) => {
+            console.log("Value currently is " + result.colorKey);
+            txtOut.value += 'Color: ' + result.colorKey + ' ';
+            backgroundCSS = `body { background-color: ${result.colorKey} !important; }`;
+            injectCSS(backgroundCSS);
+        });
+        chrome.storage.local.get(["fontKey"]).then((result) => {
+            console.log("Value currently is " + result.fontKey);
+            txtOut.value += 'Font: ' + result.fontKey + ' ';
+            fontCSS = `body{ font-family: '${result.fontKey}' !important; }`
+            injectCSS(fontCSS);
+        });
+
+    });
+
+    btnIncrease.addEventListener('click',()=>{
+        chrome.fontSettings.getDefaultFontSize({}, (fontInfo) => {
+            const fontSize = fontInfo.pixelSize + 2;
+            chrome.fontSettings.setDefaultFontSize({ pixelSize: fontSize }, () => {
+                fontSizeElement.textContent = newFontSize.toString();
+            });
+        });
+    });
+
+    btnDecrease.addEventListener('click',()=>{
+        chrome.fontSettings.getDefaultFontSize({}, (fontInfo) => {
+            const fontSize = fontInfo.pixelSize - 2;
+            chrome.fontSettings.setDefaultFontSize({ pixelSize: fontSize }, () => {
+                fontSizeElement.textContent = newFontSize.toString();
+            });
+        });
+    });
 
     //Event listener that changes the font on the page based on what's selected on dropdown
     btnText.addEventListener('click',()=>{
@@ -46,7 +102,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Event Listener for the Color Button that injects the chosen background CSS
     btnColor.addEventListener('click',()=>{
-        injectCSS(backgroundCSS);
+        if(picked === ""){
+            injectCSS(`body { background-color: #808080 !important; }`)
+        }else{ injectCSS(backgroundCSS);}
+
     });
 
     //currently unused event handler
@@ -103,6 +162,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         btnColor.innerText = `${textInstances[0].innerText}`;
         textInstances[0].style.fontSize = `5px`;
+
+    }
+
+    function setFont(){
 
     }
 
