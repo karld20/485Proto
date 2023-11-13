@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnLoad = document.getElementById('btnLoad');
     const txtOut = document.getElementById('txtOut');
     const btnClear = document.getElementById('btnClear');
+    const btnScan = document.getElementById('btnScan');
 
     btnSave.addEventListener('click',async () => {
         chrome.storage.local.set({ colorKey: picked }).then(() => {
@@ -28,13 +29,17 @@ document.addEventListener('DOMContentLoaded', function() {
         chrome.storage.local.set({ fontKey: fontID }).then(() => {
             console.log("Value is set");
         });
+
+        txtOut.value = 'Changes Saved';
     });
 
     btnClear.addEventListener('click',()=>{
         chrome.storage.local.clear();
+        txtOut.value = 'Changes Cleared';
     });
 
     btnLoad.addEventListener('click',()=>{
+        txtOut.value = '';
         chrome.storage.local.get(["colorKey"]).then((result) => {
             console.log("Value currently is " + result.colorKey);
             txtOut.value += 'Color: ' + result.colorKey + ' ';
@@ -71,7 +76,8 @@ document.addEventListener('DOMContentLoaded', function() {
     //Event listener that changes the font on the page based on what's selected on dropdown
     btnText.addEventListener('click',()=>{
         fontID = fntSelect.value;
-        btnAI.innerText = `${fontID}`;
+
+        txtOut.value = `${fontID}`;
         switch(fontID){
             //this font doesn't work yet
             case "atkinson":
@@ -98,6 +104,8 @@ document.addEventListener('DOMContentLoaded', function() {
     colorPick.addEventListener('input',() =>{
         picked = document.getElementById("colorpicker").value;
         backgroundCSS = `body { background-color: ${picked} !important; }`;
+
+        txtOut.value = picked;
     });
 
     //Event Listener for the Color Button that injects the chosen background CSS
@@ -109,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     //currently unused event handler
-    btnAI.addEventListener('click',()=>{
+    btnScan.addEventListener('click',()=>{
         runScript(getTextInstances());
     });
 
@@ -124,10 +132,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 target: {
                     tabId: tab.id
                 }
-            }).then(() => btnAI.innerText = `${tab.id}`);
+            }).then(() => console.log(tab.id));
         } catch (e) {
             console.error(e);
-            btnAI.innerText = 'Injection failed.';
+            txtOut.value = 'Injection failed.';
         }
 
     }
@@ -160,11 +168,11 @@ document.addEventListener('DOMContentLoaded', function() {
         textInstances.forEach(function(entry){
             console.log(entry.innerText);
         });
-        btnColor.innerText = `${textInstances[0].innerText}`;
+        txtOut.value = `${textInstances[0].innerText}`;
         textInstances[0].style.fontSize = `5px`;
-
     }
 
+    //Might want to break this up soon
     function setFont(){
 
     }
