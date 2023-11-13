@@ -118,7 +118,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //currently unused event handler
     btnScan.addEventListener('click',()=>{
-        runScript(getTextInstances());
+        runScript(getButtonInstances());
+        /*
+        let options = {
+            type: 'basic',
+            title: 'Scan Notification',
+            message: 'Scanned Page',
+            iconUrl: 'images/UI_Logo.png'
+        };
+        chrome.notifications.create(options);
+
+         */
     });
 
     //function that gets the current tab you're on then injects the CSS passed in the function
@@ -171,6 +181,14 @@ document.addEventListener('DOMContentLoaded', function() {
         txtOut.value = `${textInstances[0].innerText}`;
         textInstances[0].style.fontSize = `5px`;
     }
+
+    function getButtonInstances(){
+        let btnInstances = document.querySelectorAll("button");
+        btnInstances.forEach(function(entry){
+            txtOut.value += (entry.innerText) + ' ';
+        });
+    }
+
 
     //Might want to break this up soon
     function setFont(){

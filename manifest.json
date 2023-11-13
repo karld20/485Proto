@@ -12,7 +12,8 @@
     "scripting",
     "activeTab",
     "storage",
-    "fontSettings"
+    "fontSettings",
+    "notifications"
   ],
   "host_permissions": [
     "http://*/*",
