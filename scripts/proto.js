@@ -12,14 +12,15 @@ document.addEventListener('DOMContentLoaded', function() {
     let fontCSS = "";
     let fontID = "";
     let fontName = "";
-    let fontSize;
-    let tempFontSize;
-    const storage = chrome.storage.local;
     const btnSave = document.getElementById('btnSave');
     const btnLoad = document.getElementById('btnLoad');
     const txtOut = document.getElementById('txtOut');
     const btnClear = document.getElementById('btnClear');
     const btnScan = document.getElementById('btnScan');
+    let currTab;
+
+    getTabId();
+
 
     btnSave.addEventListener('click',async () => {
         chrome.storage.local.set({ colorKey: picked }).then(() => {
@@ -136,16 +137,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //function that gets the current tab you're on then injects the CSS passed in the function
     async function injectCSS(css) {
-        let queryOptions = {active: true, lastFocusedWindow: true};
-        // `tab` will either be a `tabs.Tab` instance or `undefined`.
-        let [tab] = await chrome.tabs.query(queryOptions);
         try {
             await chrome.scripting.insertCSS({
                 css: css,
                 target: {
-                    tabId: tab.id
+                    tabId: currTab
                 }
-            }).then(() => console.log(tab.id));
+            }).then(() => console.log(currTab));
         } catch (e) {
             console.error(e);
             txtOut.value = 'Injection failed.';
@@ -155,13 +153,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     async function runScript(funct) {
-        let queryOptions = {active: true, lastFocusedWindow: true};
-        // `tab` will either be a `tabs.Tab` instance or `undefined`.
-        let [tab] = await chrome.tabs.query(queryOptions);
-
         chrome.scripting
             .executeScript({
-                target : {tabId : tab.id},
+                target : {tabId : currTab},
                 func : funct,
             })
             .then(() => console.log ("injected a function"));
@@ -169,11 +163,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //unused function for if I was able to split up getting the tab & injectcss tasks
     async function getTabId(){
-        let queryOptions = { active: true, lastFocusedWindow: true };
+        let queryOptions = {active: true, lastFocusedWindow: true};
         // `tab` will either be a `tabs.Tab` instance or `undefined`.
-        let [tab] = chrome.tabs.query(queryOptions);
+        let [tab] = await chrome.tabs.query(queryOptions);
+        currTab = tab.id;
+        txtOut.value = currTab;
 
-        console.log(tab.id);
+        console.log('ranFunct');
     }
 
     function getTextInstances(){
