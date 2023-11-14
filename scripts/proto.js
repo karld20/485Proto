@@ -56,22 +56,25 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     btnIncrease.addEventListener('click',()=>{
-        chrome.fontSettings.getDefaultFontSize({}, (fontInfo) => {
-            const fontSize = fontInfo.pixelSize + 2;
-            chrome.fontSettings.setDefaultFontSize({ pixelSize: fontSize }, () => {
-                fontSizeElement.textContent = newFontSize.toString();
-            });
-        });
+        changeFont('add');
     });
 
     btnDecrease.addEventListener('click',()=>{
+        changeFont('minus');
+    });
+
+    function changeFont(operator){
         chrome.fontSettings.getDefaultFontSize({}, (fontInfo) => {
-            const fontSize = fontInfo.pixelSize - 2;
+            let fontSize = fontInfo.pixelSize;
+
+            if(operator === 'add'){fontSize += 2;
+            } else { fontSize -= 2};
+
             chrome.fontSettings.setDefaultFontSize({ pixelSize: fontSize }, () => {
                 fontSizeElement.textContent = newFontSize.toString();
             });
         });
-    });
+    }
 
     //Event listener that changes the font on the page based on what's selected on dropdown
     btnText.addEventListener('click',()=>{
