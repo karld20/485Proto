@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const btnColor = document.getElementById('btnColor');
     const btnText = document.getElementById('btnText');
-    const btnAI = document.getElementById('btnAI');
-    const btnSubmit = document.getElementById("btnSubmit");
     const colorPick = document.getElementById("colorpicker");
     const fntSelect = document.getElementById("fonts");
     const btnDecrease = document.getElementById("btnDecrease");
@@ -10,33 +8,72 @@ document.addEventListener('DOMContentLoaded', function() {
     let picked = "";
     let backgroundCSS = ``;
     let fontCSS = "";
-    let fontID = "";
+    //let fontID = "";
     let fontName = "";
     const btnSave = document.getElementById('btnSave');
     const btnLoad = document.getElementById('btnLoad');
     const txtOut = document.getElementById('txtOut');
     const btnClear = document.getElementById('btnClear');
     const btnScan = document.getElementById('btnScan');
+    const graySlide = document.getElementById('graySlide')
     let currTab;
+    let tempCSS = "";
+    let bright = "";
+
+    let select = "";
+
+    const brightSelect = document.getElementById('myRange');
+
+
+    let count = 1;
+
+    const fontObj = {
+        size: 16,
+        color: "",  //haven't finished this yet
+        name: "",
+        fontId: "",
+    }
+
+    const colorObj = {
+        bright: 100,
+        background: "",
+        grayscale: 0,
+        colorId: "",
+    }
 
     getTabId();
 
+    brightSelect.addEventListener('input',()=>{
+        colorObj.bright = brightSelect.value;
+        brightCSS = `* {filter: brightness(${brightValue}%) !important;}`;
+        injectCSS(brightCSS);
+    });
+
+    graySlide.addEventListener('input',()=>{
+        colorObj.grayscale = graySlide.value;
+        tempCSS = `*{filter: grayscale(${colorObj.grayscale}%) !important;}`;
+        injectCSS(tempCSS);
+    });
+
+
 
     btnSave.addEventListener('click',async () => {
-        chrome.storage.local.set({ colorKey: picked }).then(() => {
-            console.log("Value is set");
+        chrome.storage.local.set({ colorObject: colorObj }).then(() => {
+            console.log("Color is set");
         });
 
-        chrome.storage.local.set({ fontKey: fontID }).then(() => {
-            console.log("Value is set");
+        chrome.storage.local.set({ fontObject: fontObj }).then(() => {
+            console.log("Font is set");
         });
 
         txtOut.value = 'Changes Saved';
+        txtOut.value += JSON.stringify(fontObj);
     });
 
     btnClear.addEventListener('click',()=>{
         chrome.storage.local.clear();
         txtOut.value = 'Changes Cleared';
+        injectCSS(`*{filter: grayscale(200%) !important;}`);
     });
 
     btnLoad.addEventListener('click',()=>{
@@ -57,11 +94,15 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     btnIncrease.addEventListener('click',()=>{
-        changeFont('add');
+        fontObj.size++
+        injectCSS(`*{font-size: ${fontObj.size}px !important;}`);
+        //changeFont('add');
     });
 
     btnDecrease.addEventListener('click',()=>{
-        changeFont('minus');
+        fontObj.size--;
+        injectCSS(`*{font-size: ${fontObj.size}px !important;}`);
+        //changeFont('minus');
     });
 
     function changeFont(operator){
@@ -79,44 +120,68 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Event listener that changes the font on the page based on what's selected on dropdown
     btnText.addEventListener('click',()=>{
-        fontID = fntSelect.value;
+        btnIncrease.style.display = "inline";
+        btnDecrease.style.display = "inline";
+        colorPick.style.display = "none";
+        brightSelect.style.display = "none";
+        fntSelect.style.display = "inline";
+    });
 
-        txtOut.value = `${fontID}`;
-        switch(fontID){
+    fntSelect.addEventListener('change',()=>{
+        fontObj.fontId = fntSelect.value;
+        switch(fontObj.fontId){
             //this font doesn't work yet
             case "atkinson":
-                fontName = `Atkinson Hyperlegible`;
+                fontObj.fontName = `Atkinson Hyperlegible`;
                 break;
             case "times":
-                fontName = `Times New Roman`;
+                fontObj.fontName = `Times New Roman`;
                 break;
             case "arial":
-                fontName = `Arial`;
+                fontObj.fontName = `Arial`;
                 break;
             case "tahoma":
-                fontName = `Tahoma`;
+                fontObj.fontName = `Tahoma`;
                 break;
             case "verdana":
-                fontName = `Verdana`;
+                fontObj.fontName = `Verdana`;
                 break;
+            default:
+                fontObj.fontName = `Times New Roman`;
         }
-        fontCSS = `body{ font-family: '${fontName}' !important; }`
+        fontCSS = `body{ font-family: '${fontObj.fontName}' !important; }`
         injectCSS(fontCSS);
-    })
+        txtOut.value = fontObj.fontName;
+    });
 
     //Event Listener for the color picker, sets picked color to CSS string
     colorPick.addEventListener('input',() =>{
-        picked = document.getElementById("colorpicker").value;
-        backgroundCSS = `body { background-color: ${picked} !important; }`;
-
+        colorObj.background = colorPick.value;
+        backgroundCSS = `body { background-color: ${colorObj.background} !important; }`;
+        injectCSS(backgroundCSS);
         txtOut.value = picked;
+        txtOut.value += " " + colorObj.background;
     });
 
     //Event Listener for the Color Button that injects the chosen background CSS
     btnColor.addEventListener('click',()=>{
-        if(picked === ""){
-            injectCSS(`body { background-color: #808080 !important; }`)
-        }else{ injectCSS(backgroundCSS);}
+        btnIncrease.style.display = "none";
+        btnDecrease.style.display = "none";
+        colorPick.style.display = "inline";
+        brightSelect.style.display = "inline";
+        fntSelect.style.display = "none";
+
+        //injectCSS(backgroundCSS);
+        /*
+       counter += 1;
+
+       if(counter % 2 === 0){
+
+        injectCSS(`body { background-color: ${green} !important;}`);
+        } else {
+            injectCSS(`body { background-color: ${blue} !important;}`);
+        }
+        */
 
     });
 
@@ -143,7 +208,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 target: {
                     tabId: currTab
                 }
-            }).then(() => console.log(currTab));
+            })
         } catch (e) {
             console.error(e);
             txtOut.value = 'Injection failed.';
@@ -190,8 +255,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     //Might want to break this up soon
-    function setFont(){
-
+    function setBackgroundColor(backColor){
+        injectCSS(`body { background-color: ${backColor} !important; }`);
     }
 
 });

@@ -3,8 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <title>ADA Web Toolbox</title>
-    <script src="../scripts/proto.js"></script>
-    <link rel="stylesheet" href="../css/style.css">
     <!--Working on this-->
     <link href='https://fonts.googleapis.com/css?family=Atkinson Hyperlegible' rel='stylesheet'>
 </head>
@@ -40,14 +38,16 @@
                  Settings Display Here &#13;&#10;
             </textarea>
             <div class="btn" style="margin-top:10px;"><button class="btn" id="btnClear">CLEAR CHANGES</button></div>
+            <input type="range" min="75" max="110" value="100" class="slider" step="5" id="myRange">
+            <form>
+                <input type="radio" name="font" checked>Font Menu
+                <input type="radio" name="color">Color Menu
+            </form>
+            <input type="range" min="0" max="50" value="0" class="slider" step="10" id="graySlide">
+            
 
-
-        </div>
-        <div class="popup" id="popup">
-            <img src="../images/UI_Logo.png" alt="">
-            <h2>Thank You!</h2>
-            <p>Your details have been successfully submitted!</p>
         </div>
     </div>
 </body>
+<script src="../scripts/proto.js"></script>
 </html>
