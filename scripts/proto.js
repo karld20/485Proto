@@ -42,6 +42,12 @@ document.addEventListener('DOMContentLoaded', function() {
     //Runs every time you click the extension button to get the current tab id
     getTabId();
 
+    btnHelp.addEventListener('click',()=>{
+        chrome.tabs.create({
+            url: "html/info.html"
+          });
+    });
+
     //Event Listener for the slider, changes brightness values
     brightSelect.addEventListener('input',()=>{
         colorObj.bright = brightSelect.value;
@@ -259,5 +265,5 @@ document.addEventListener('DOMContentLoaded', function() {
  *     - Scan passing [checkmark] or failing [x] for alt text (badge notification)
  *     - Actual Disability Problems/Solutions [colorblind etc]
  *     - Downloaded fonts for better readability
- *
+ *     - Usability stuff like button outline etc.
  */
