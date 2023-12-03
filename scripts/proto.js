@@ -12,7 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const txtOut = document.getElementById('txtOut');
     const btnClear = document.getElementById('btnClear');
     const btnScan = document.getElementById('btnScan');
-    const graySlide = document.getElementById('graySlide')
+    const graySlide = document.getElementById('graySlide');
+    const btnHelp = document.getElementById('btnHelp');
 
     let currTab;
     let tempCSS = "";
@@ -44,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //Event Listener for the slider, changes brightness values
     brightSelect.addEventListener('input',()=>{
         colorObj.bright = brightSelect.value;
-        brightCSS = `* {filter: brightness(${brightValue}%) !important;}`;
+        brightCSS = `* {filter: brightness(${colorObj.bright}%) !important;}`;
         injectCSS(brightCSS);
     });
 
@@ -161,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //Event Listener for the color picker, sets picked color to CSS string and injects on tab
     colorPick.addEventListener('input',() =>{
         colorObj.background = colorPick.value;
-        backgroundCSS = `* { background-color: ${colorObj.background} !important; }`;
+        backgroundCSS = `body { background-color: ${colorObj.background} !important; }`;
         injectCSS(backgroundCSS);
         txtOut.value = picked;
         txtOut.value += " " + colorObj.background;
