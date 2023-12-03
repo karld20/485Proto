@@ -187,7 +187,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //currently unused event handler
     btnScan.addEventListener('click',()=>{
-        runScript(getButtonInstances());
+        runFile('scripts/scan.js');
+
+        chrome.storage.local.get(["noAlt"]).then((result)=>{
+            console.log(result.noAlt);
+        });
+
+        //runScript(getButtonInstances());
         /*
         let options = {
             type: 'basic',
