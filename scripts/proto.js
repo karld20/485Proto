@@ -121,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    //Event listener that shows the Font menu of options
+    //Event listener that shows the Font menu of options & Hides the Color options
     btnText.addEventListener('click',()=>{
         btnIncrease.style.display = "inline";
         btnDecrease.style.display = "inline";
@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', function() {
             default:
                 fontObj.fontName = `Times New Roman`;
         }
-        fontCSS = `body{ font-family: '${fontObj.fontName}' !important; }`
+        fontCSS = `*{ font-family: '${fontObj.fontName}' !important; }`
         injectCSS(fontCSS);
         txtOut.value = fontObj.fontName;
     });
