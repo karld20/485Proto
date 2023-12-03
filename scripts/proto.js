@@ -269,12 +269,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /**
  *      ToDo:
- *     - Having it only grab tabID if you're on a new page to save time/remove async errors
- *     - Text Size function
- *     - Sliders to dictate greyscale or brightness or color intensity
+ *     - Objects Save & Load & Apply
+ *     - Alt Text Object on Scan
+ *     - Scan only scanning inside body
  *     - AI Alt Text using crowdsourced Stable Horde
- *     - More robust CSS file injections
- *     - Scanning of page
- *     -
+ *     - Scan passing [checkmark] or failing [x] for alt text (badge notification)
+ *     - Actual Disability Problems/Solutions [colorblind etc]
+ *     - Downloaded fonts for better readability
  *
  */
