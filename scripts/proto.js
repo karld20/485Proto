@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnClear = document.getElementById('btnClear');
     const btnScan = document.getElementById('btnScan');
     const graySlide = document.getElementById('graySlide');
-    const btnHelp = document.getElementById('btnHelp');
+    const btnInfo = document.getElementById('btnInfo');
 
     let currTab;
     let tempCSS = "";
@@ -42,7 +42,8 @@ document.addEventListener('DOMContentLoaded', function() {
     //Runs every time you click the extension button to get the current tab id
     getTabId();
 
-    btnHelp.addEventListener('click',()=>{
+    
+    btnInfo.addEventListener('click',()=>{
         chrome.tabs.create({
             url: "html/info.html"
           });
@@ -85,6 +86,14 @@ document.addEventListener('DOMContentLoaded', function() {
     //Event Listener that loads the locally stored data and applys it to the page
     btnLoad.addEventListener('click',()=>{
         txtOut.value = '';
+        chrome.storage.local.get(["colorObj"]).then((result) => {
+            
+        });
+
+        chrome.storage.local.get(["fontObj"]).then((result) => {
+            
+        });
+        /*
         chrome.storage.local.get(["colorKey"]).then((result) => {
             console.log("Value currently is " + result.colorKey);
             txtOut.value += 'Color: ' + result.colorKey + ' ';
@@ -97,6 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
             fontCSS = `body{ font-family: '${result.fontKey}' !important; }`
             injectCSS(fontCSS);
         });
+        */
 
     });
 
