@@ -161,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //Event Listener for the color picker, sets picked color to CSS string and injects on tab
     colorPick.addEventListener('input',() =>{
         colorObj.background = colorPick.value;
-        backgroundCSS = `body { background-color: ${colorObj.background} !important; }`;
+        backgroundCSS = `* { background-color: ${colorObj.background} !important; }`;
         injectCSS(backgroundCSS);
         txtOut.value = picked;
         txtOut.value += " " + colorObj.background;
@@ -253,7 +253,7 @@ document.addEventListener('DOMContentLoaded', function() {
  *      ToDo:
  *     - Objects Save & Load & Apply
  *     - Alt Text Object on Scan
- *     - Scan only scanning inside body
+ *     - Scan only scanning inside main
  *     - AI Alt Text using crowdsourced Stable Horde
  *     - Scan passing [checkmark] or failing [x] for alt text (badge notification)
  *     - Actual Disability Problems/Solutions [colorblind etc]
