@@ -1,32 +1,28 @@
 document.addEventListener('DOMContentLoaded', function() {
+    
+    //On screen elements
     const btnColor = document.getElementById('btnColor');
     const btnText = document.getElementById('btnText');
     const colorPick = document.getElementById("colorpicker");
     const fntSelect = document.getElementById("fonts");
     const btnDecrease = document.getElementById("btnDecrease");
     const btnIncrease = document.getElementById("btnIncrease");
-    let picked = "";
-    let backgroundCSS = ``;
-    let fontCSS = "";
-    //let fontID = "";
-    let fontName = "";
     const btnSave = document.getElementById('btnSave');
     const btnLoad = document.getElementById('btnLoad');
     const txtOut = document.getElementById('txtOut');
     const btnClear = document.getElementById('btnClear');
     const btnScan = document.getElementById('btnScan');
     const graySlide = document.getElementById('graySlide')
+
     let currTab;
     let tempCSS = "";
-    let bright = "";
-
-    let select = "";
+    let picked = "";
+    let backgroundCSS = ``;
+    let fontCSS = "";
 
     const brightSelect = document.getElementById('myRange');
 
-
-    let count = 1;
-
+    //Font Object to save settings
     const fontObj = {
         size: 16,
         color: "",  //haven't finished this yet
@@ -34,6 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fontId: "",
     }
 
+    //Color Object to save settings
     const colorObj = {
         bright: 100,
         background: "",
@@ -41,22 +38,24 @@ document.addEventListener('DOMContentLoaded', function() {
         colorId: "",
     }
 
+    //Runs every time you click the extension button to get the current tab id
     getTabId();
 
+    //Event Listener for the slider, changes brightness values
     brightSelect.addEventListener('input',()=>{
         colorObj.bright = brightSelect.value;
         brightCSS = `* {filter: brightness(${brightValue}%) !important;}`;
         injectCSS(brightCSS);
     });
 
+    //Event listener for the grayscale slider, changes grayscale values
     graySlide.addEventListener('input',()=>{
         colorObj.grayscale = graySlide.value;
         tempCSS = `*{filter: grayscale(${colorObj.grayscale}%) !important;}`;
         injectCSS(tempCSS);
     });
 
-
-
+    //Event Listener that saves the user's Font & Color settings to be reloaded
     btnSave.addEventListener('click',async () => {
         chrome.storage.local.set({ colorObject: colorObj }).then(() => {
             console.log("Color is set");
@@ -70,12 +69,13 @@ document.addEventListener('DOMContentLoaded', function() {
         txtOut.value += JSON.stringify(fontObj);
     });
 
+    //Event Listener that clears the locally stored data
     btnClear.addEventListener('click',()=>{
         chrome.storage.local.clear();
         txtOut.value = 'Changes Cleared';
-        injectCSS(`*{filter: grayscale(200%) !important;}`);
     });
 
+    //Event Listener that loads the locally stored data and applys it to the page
     btnLoad.addEventListener('click',()=>{
         txtOut.value = '';
         chrome.storage.local.get(["colorKey"]).then((result) => {
@@ -93,18 +93,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
     });
 
+    //Event Listener to increase local tab's font size
     btnIncrease.addEventListener('click',()=>{
         fontObj.size++
         injectCSS(`*{font-size: ${fontObj.size}px !important;}`);
         //changeFont('add');
     });
-
+    
+    //Event Listener to decrease local tab's font size
     btnDecrease.addEventListener('click',()=>{
         fontObj.size--;
         injectCSS(`*{font-size: ${fontObj.size}px !important;}`);
         //changeFont('minus');
     });
 
+    //Function that changes the Global Browser font size
     function changeFont(operator){
         chrome.fontSettings.getDefaultFontSize({}, (fontInfo) => {
             let fontSize = fontInfo.pixelSize;
@@ -118,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    //Event listener that changes the font on the page based on what's selected on dropdown
+    //Event listener that shows the Font menu of options
     btnText.addEventListener('click',()=>{
         btnIncrease.style.display = "inline";
         btnDecrease.style.display = "inline";
@@ -127,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
         fntSelect.style.display = "inline";
     });
 
+    //Event Listener that changes the font type 
     fntSelect.addEventListener('change',()=>{
         fontObj.fontId = fntSelect.value;
         switch(fontObj.fontId){
@@ -154,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
         txtOut.value = fontObj.fontName;
     });
 
-    //Event Listener for the color picker, sets picked color to CSS string
+    //Event Listener for the color picker, sets picked color to CSS string and injects on tab
     colorPick.addEventListener('input',() =>{
         colorObj.background = colorPick.value;
         backgroundCSS = `body { background-color: ${colorObj.background} !important; }`;
@@ -163,7 +167,7 @@ document.addEventListener('DOMContentLoaded', function() {
         txtOut.value += " " + colorObj.background;
     });
 
-    //Event Listener for the Color Button that injects the chosen background CSS
+    //Event Listener for the Color Button that shows the Color Menu of options
     btnColor.addEventListener('click',()=>{
         btnIncrease.style.display = "none";
         btnDecrease.style.display = "none";
@@ -171,21 +175,9 @@ document.addEventListener('DOMContentLoaded', function() {
         brightSelect.style.display = "inline";
         fntSelect.style.display = "none";
 
-        //injectCSS(backgroundCSS);
-        /*
-       counter += 1;
-
-       if(counter % 2 === 0){
-
-        injectCSS(`body { background-color: ${green} !important;}`);
-        } else {
-            injectCSS(`body { background-color: ${blue} !important;}`);
-        }
-        */
-
     });
 
-    //currently unused event handler
+    //Event Listener that scans the current page for missing alt text
     btnScan.addEventListener('click',()=>{
         runFile('scripts/scan.js');
 
@@ -193,20 +185,9 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log(result.noAlt);
         });
 
-        //runScript(getButtonInstances());
-        /*
-        let options = {
-            type: 'basic',
-            title: 'Scan Notification',
-            message: 'Scanned Page',
-            iconUrl: 'images/UI_Logo.png'
-        };
-        chrome.notifications.create(options);
-
-         */
     });
 
-    //function that gets the current tab you're on then injects the CSS passed in the function
+    //function that injects the CSS passed into the function
     async function injectCSS(css) {
         try {
             await chrome.scripting.insertCSS({
@@ -222,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
 
-
+    //Function that allows you to run a script on the page
     async function runScript(funct) {
         chrome.scripting
             .executeScript({
@@ -232,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(() => console.log ("injected a function"));
     }
 
-    //unused function for if I was able to split up getting the tab & injectcss tasks
+    //Function that gets the current tab ID; ran each time you open the extension
     async function getTabId(){
         let queryOptions = {active: true, lastFocusedWindow: true};
         // `tab` will either be a `tabs.Tab` instance or `undefined`.
@@ -243,6 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('ranFunct');
     }
 
+/*
     function getTextInstances(){
         let textInstances = document.querySelectorAll("h1");
         textInstances.forEach(function(entry){
@@ -258,9 +240,9 @@ document.addEventListener('DOMContentLoaded', function() {
             txtOut.value += (entry.innerText) + ' ';
         });
     }
+*/
 
-
-    //Might want to break this up soon
+    //Start of architecture change on applying changes
     function setBackgroundColor(backColor){
         injectCSS(`body { background-color: ${backColor} !important; }`);
     }
