@@ -75,6 +75,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         txtOut.value = 'Changes Saved';
         txtOut.value += JSON.stringify(fontObj);
+        txtOut.value += JSON.stringify(colorObj);
     });
 
     //Event Listener that clears the locally stored data
@@ -86,12 +87,17 @@ document.addEventListener('DOMContentLoaded', function() {
     //Event Listener that loads the locally stored data and applys it to the page
     btnLoad.addEventListener('click',()=>{
         txtOut.value = '';
-        chrome.storage.local.get(["colorObj"]).then((result) => {
-            
+        chrome.storage.local.get(["colorObject"]).then((result) => {
+            setBackgroundColor(result.colorObject.background);
+            setPageBrightness(result.colorObject.bright);
+            setPageGrayscale(result.colorObject.grayscale);
         });
 
-        chrome.storage.local.get(["fontObj"]).then((result) => {
-            
+        chrome.storage.local.get(["fontObject"]).then((result) => {
+            setFontSize(result.fontObject.size);
+            setFontColor(result.fontObject.color);
+            setFontName(result.fontObject.name);
+            setFontId(result.fontObject.fontId);
         });
         /*
         chrome.storage.local.get(["colorKey"]).then((result) => {
@@ -260,8 +266,38 @@ document.addEventListener('DOMContentLoaded', function() {
 */
 
     //Start of architecture change on applying changes
-    function setBackgroundColor(backColor){
-        injectCSS(`body { background-color: ${backColor} !important; }`);
+    function setBackgroundColor(background){
+        colorObj.background = background;
+        injectCSS(`body { background-color: ${background} !important; }`);
+    }
+
+    function setPageBrightness(bright){
+        colorObj.bright = bright;
+        injectCSS(`* {filter: brightness(${colorObj.bright}%) !important;}`);
+    }
+
+    function setPageGrayscale(grayscale){
+        colorObj.grayscale = grayscale;
+        injectCSS(`*{filter: grayscale(${colorObj.grayscale}%) !important;}`); 
+    }
+
+    function setFontSize(size){
+        fontObj.size = size;
+        injectCSS(`*{font-size: ${fontObj.size}px !important;}`);
+    }
+
+    function setFontColor(color){
+        fontObj.color = color;
+        //injectCSS(``);
+    }
+
+    function setFontName(name){
+        fontObj.name = name;
+        injectCSS(`*{ font-family: '${fontObj.fontName}' !important; }`);
+    }
+
+    function setFontId(fontId){
+        fontObj.fontId = fontId;
     }
 
 });
