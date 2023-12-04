@@ -201,9 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
         //runFile('scripts/scan.js');
         runScript(scanForImage);
         //runScript();
-        txtOut.value = `Number of Alt Text Missing: ${altObj.altNum} \nImage Sources: `
-
-        txtOut.value += altObj.altSrc;  
+          
         /*
         chrome.storage.local.get(["noAlt"]).then((result)=>{
             txtOut.value = JSON.stringify(result.noAlt);
@@ -249,6 +247,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     altObj.altNum = result.altNum;
                     altObj.altSrc = result.altSrc;
                     console.log(altObj);
+                    txtOut.value = `Number of Alt Text Missing: ${altObj.altNum} \nImage Sources:\n`
+                    txtOut.value += altObj.altSrc;
                     }
                 });
             
