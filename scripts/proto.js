@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //Runs every time you click the extension button to get the current tab id
     getTabId();
 
-    runFile('scripts/scan.js');
+    //runFile('scripts/scan.js');
 
     chrome.action.setBadgeText({ text: '' });
 
@@ -191,7 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Event Listener that scans the current page for missing alt text
     btnScan.addEventListener('click',()=>{
-        runFile('scripts/scan.js');
+        //runFile('scripts/scan.js');
+        runScript(scanForImage);
 
         chrome.storage.local.get(["noAlt"]).then((result)=>{
             txtOut.value = JSON.stringify(result.noAlt);
@@ -243,12 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('ranFunct');
     }
 
-    async function runFile(fileName){
-        let queryOptions = {active: true, lastFocusedWindow: true};
-        // `tab` will either be a `tabs.Tab` instance or `undefined`.
-        let [tab] = await chrome.tabs.query(queryOptions);
-        currTab = tab.id;
-
+    function runFile(fileName){
         chrome.scripting.executeScript({
             target: {tabId: currTab},
             files: [fileName]
@@ -312,7 +308,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+function scanForImage(){
+    const imageScan = document.querySelectorAll("img");
 
+    console.log(imageScan);
+
+    let countNoAlt = 0;
+
+    let altText = "";
+    //For loop that adds and collects the images with no alt text
+    for (let i = 0; i < imageScan.length; i++){
+        if(imageScan[i].alt === ""){
+            countNoAlt += 1;
+            altText[i] = imageScan[i].alt;   
+        }
+    }
+    chrome.storage.local.set({noAlt: countNoAlt}).then(()=>{
+        console.log(`Lack of Alt Text value is set at ${countNoAlt}`);
+    });
+}
 /**
  *      ToDo:
  *     + Objects Save & Load & Apply 
