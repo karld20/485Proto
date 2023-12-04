@@ -40,6 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
         colorId: "",
     }
 
+    //Alt Text Object from Scan
+    const altObj = {
+        altNum: 0,
+        altSrc: []
+    }
+
     //Runs every time you click the extension button to get the current tab id
     getTabId();
 
@@ -194,7 +200,10 @@ document.addEventListener('DOMContentLoaded', function() {
     btnScan.addEventListener('click',()=>{
         //runFile('scripts/scan.js');
         runScript(scanForImage);
-        txtOut.value = scriptResult;
+        //runScript();
+        txtOut.value = `Number of Alt Text Missing: ${altObj.altNum} \nImage Sources: `
+
+        txtOut.value += altObj.altSrc;  
         /*
         chrome.storage.local.get(["noAlt"]).then((result)=>{
             txtOut.value = JSON.stringify(result.noAlt);
@@ -228,16 +237,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Function that allows you to run a script on the page
     async function runScript(funct) {
-        chrome.scripting
-            .executeScript({
-                target : {tabId : currTab},
-                func : funct,
-                
-            }).then(injectionResults => {
-                for (const {frameId, result} of injectionResults) {
-                  scriptResult = result;
-                }
-              });
+            chrome.scripting
+                .executeScript({
+                    target : {tabId : currTab},
+                    func : funct,
+                    
+                }).then(injectionResults => {
+                    for (const {frameId, result} of injectionResults) {
+                    //scriptResult = result;
+                    console.log(result);
+                    altObj.altNum = result.altNum;
+                    altObj.altSrc = result.altSrc;
+                    console.log(altObj);
+                    }
+                });
             
     }
 
@@ -246,10 +259,9 @@ document.addEventListener('DOMContentLoaded', function() {
         let queryOptions = {active: true, lastFocusedWindow: true};
         // `tab` will either be a `tabs.Tab` instance or `undefined`.
         let [tab] = await chrome.tabs.query(queryOptions);
-        currTab = tab.id;
-        txtOut.value = currTab;
-
-        console.log('ranFunct');
+        console.log(`tab`);
+        currTab = await tab.id;
+        console.log(`id`);
     }
 
     function runFile(fileName){
@@ -321,18 +333,22 @@ function scanForImage(){
 
     console.log(imageScan);
 
-    let countNoAlt = 0;
 
-    let altText = "";
+    const altObj = {
+        altNum: 0,
+        altSrc: []
+    }
     //For loop that adds and collects the images with no alt text
     for (let i = 0; i < imageScan.length; i++){
         if(imageScan[i].alt === ""){
-            countNoAlt += 1;
-            altText[i] = imageScan[i].alt;   
+            altObj.altNum += 1;
+            //altText[i] = imageScan[i].alt;
+            altObj.altSrc[i] = imageScan[i].currentSrc;
         }
     }
+    console.log(altObj);
 
-    return countNoAlt;
+    return altObj;
     /*
     chrome.storage.local.set({noAlt: countNoAlt}).then(()=>{
         console.log(`Lack of Alt Text value is set at ${countNoAlt}`);
