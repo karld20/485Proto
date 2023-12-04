@@ -1,11 +1,11 @@
 //Node List of all that image instances
-imageScan = document.querySelectorAll("img");
+const imageScan = document.querySelectorAll("img");
 
 console.log(imageScan);
 
-countNoAlt = 0;
+let countNoAlt = 0;
 
-altText = "";
+let altText = "";
 
 //For loop that adds and collects the images with no alt text
 for (let i = 0; i < imageScan.length; i++){

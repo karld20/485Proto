@@ -196,8 +196,10 @@ document.addEventListener('DOMContentLoaded', function() {
         chrome.storage.local.get(["noAlt"]).then((result)=>{
             txtOut.value = JSON.stringify(result.noAlt);
 
-            if(result.noAlt === 0){
+            if(result.noAlt !== 0){
                 chrome.action.setBadgeText({text : "Fail"});
+            } else {
+                chrome.action.setBadgeText({text: "Pass"});
             }
         });
 
