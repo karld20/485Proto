@@ -16,9 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnInfo = document.getElementById('btnInfo');
 
     let currTab;
-    let tempCSS = "";
-    let picked = "";
-    let backgroundCSS = ``;
     let fontCSS = "";
 
     const brightSelect = document.getElementById('myRange');
@@ -51,16 +48,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Event Listener for the slider, changes brightness values
     brightSelect.addEventListener('input',()=>{
-        colorObj.bright = brightSelect.value;
-        brightCSS = `* {filter: brightness(${colorObj.bright}%) !important;}`;
-        injectCSS(brightCSS);
+        setPageBrightness(brightSelect.value);
     });
 
     //Event listener for the grayscale slider, changes grayscale values
     graySlide.addEventListener('input',()=>{
-        colorObj.grayscale = graySlide.value;
-        tempCSS = `*{filter: grayscale(${colorObj.grayscale}%) !important;}`;
-        injectCSS(tempCSS);
+        setPageGrayscale(graySlide.value);
     });
 
     //Event Listener that saves the user's Font & Color settings to be reloaded
@@ -99,34 +92,21 @@ document.addEventListener('DOMContentLoaded', function() {
             setFontName(result.fontObject.name);
             setFontId(result.fontObject.fontId);
         });
-        /*
-        chrome.storage.local.get(["colorKey"]).then((result) => {
-            console.log("Value currently is " + result.colorKey);
-            txtOut.value += 'Color: ' + result.colorKey + ' ';
-            backgroundCSS = `body { background-color: ${result.colorKey} !important; }`;
-            injectCSS(backgroundCSS);
-        });
-        chrome.storage.local.get(["fontKey"]).then((result) => {
-            console.log("Value currently is " + result.fontKey);
-            txtOut.value += 'Font: ' + result.fontKey + ' ';
-            fontCSS = `body{ font-family: '${result.fontKey}' !important; }`
-            injectCSS(fontCSS);
-        });
-        */
 
+        txtOut.value = 'Preferences Loaded';
     });
 
     //Event Listener to increase local tab's font size
     btnIncrease.addEventListener('click',()=>{
         fontObj.size++
-        injectCSS(`*{font-size: ${fontObj.size}px !important;}`);
+        setFontSize(fontObj.size);
         //changeFont('add');
     });
     
     //Event Listener to decrease local tab's font size
     btnDecrease.addEventListener('click',()=>{
         fontObj.size--;
-        injectCSS(`*{font-size: ${fontObj.size}px !important;}`);
+        setFontSize(fontObj.size);
         //changeFont('minus');
     });
 
@@ -183,11 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Event Listener for the color picker, sets picked color to CSS string and injects on tab
     colorPick.addEventListener('input',() =>{
-        colorObj.background = colorPick.value;
-        backgroundCSS = `body { background-color: ${colorObj.background} !important; }`;
-        injectCSS(backgroundCSS);
-        txtOut.value = picked;
-        txtOut.value += " " + colorObj.background;
+        setBackgroundColor(colorPick.value);
     });
 
     //Event Listener for the Color Button that shows the Color Menu of options
@@ -293,7 +269,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function setFontName(name){
         fontObj.name = name;
-        injectCSS(`*{ font-family: '${fontObj.fontName}' !important; }`);
+        if(name !== ''){
+            injectCSS(`*{ font-family: '${fontObj.fontName}' !important; }`);
+        }
     }
 
     function setFontId(fontId){
