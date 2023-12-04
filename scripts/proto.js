@@ -15,14 +15,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const graySlide = document.getElementById('graySlide');
     const btnInfo = document.getElementById('btnInfo');
     const lblFontSize = document.getElementById('lblFontSize');
-
+    const btnAI = document.getElementById('btnAI');
+    const brightSelect = document.getElementById('myRange');
 
     let currTab;
     let fontCSS = "";
 
-    let scriptResult; 
-
-    const brightSelect = document.getElementById('myRange');
 
     //Font Object to save settings
     const fontObj = {
@@ -49,12 +47,12 @@ document.addEventListener('DOMContentLoaded', function() {
     //Runs every time you click the extension button to get the current tab id
     getTabId();
 
-
+    //Clears badge text when clicking the icon
     chrome.action.setBadgeText({ text: '' });
 
     
 
-    
+    //Opens html page for extension information when clicked
     btnInfo.addEventListener('click',()=>{
         chrome.tabs.create({
             url: "html/info.html"
@@ -197,29 +195,20 @@ document.addEventListener('DOMContentLoaded', function() {
         brightSelect.style.display = "inline";
         fntSelect.style.display = "none";
         lblFontSize.style.display = "none";
+        graySlide.style.display = "inline";
 
     });
 
     //Event Listener that scans the current page for missing alt text
     btnScan.addEventListener('click',()=>{
-        //runFile('scripts/scan.js');
         runScript(scanForImage);
-        //runScript();
-          
-        /*
-        chrome.storage.local.get(["noAlt"]).then((result)=>{
-            txtOut.value = JSON.stringify(result.noAlt);
-
-            if(result.noAlt !== 0){
-                chrome.action.setBadgeText({text : "Fail"});
-            } else {
-                chrome.action.setBadgeText({text: "Pass"});
-            }
-        });
-        */
-
-
+        
     });
+
+    btnAI.addEventListener('click',()=>{
+        txtOut.value = "Stay Tuned!";
+    });
+    
 
     //function that injects the CSS passed into the function
     async function injectCSS(css) {
@@ -297,7 +286,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 */
 
-    //Start of architecture change on applying changes
+    //Setting values & updating CSS
     function setBackgroundColor(background){
         colorObj.background = background;
         injectCSS(`body { background-color: ${background} !important; }`);
@@ -341,7 +330,7 @@ function scanForImage(){
 
     console.log(imageScan);
 
-
+    //Alt text object to keep track of number of alt text missing as well as source of image
     const altObj = {
         altNum: 0,
         altSrc: []
@@ -357,21 +346,14 @@ function scanForImage(){
     console.log(altObj);
 
     return altObj;
-    /*
-    chrome.storage.local.set({noAlt: countNoAlt}).then(()=>{
-        console.log(`Lack of Alt Text value is set at ${countNoAlt}`);
-    });
-    */
+
 }
 /**
  *      ToDo:
- *     + Objects Save & Load & Apply 
- *     - Alt Text Object on Scan
- *     - Scan only scanning inside main
- *     - AI Alt Text using crowdsourced Stable Horde
- *     - Scan passing [checkmark] or failing [x] for alt text (badge notification)
- *     - Actual Disability Problems/Solutions [colorblind etc]
+ *     - Scan only scanning inside main [Maybe]
+ *     - AI Alt Text using crowdsourced Stable Horde [Unfeasable]
+ *     - Disability Problems/Solutions [color & text themes]
  *     - Downloaded fonts for better readability
  *     - Usability stuff like button outline etc.
- *     - Potentially have getTabId() return tabId
+ * 
  */
