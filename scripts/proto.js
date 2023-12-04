@@ -81,11 +81,11 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Font is set");
         });
 
-        txtOut.value = 'Changes Saved';
+        txtOut.value = 'Changes Saved\n\n';
         txtOut.value += JSON.stringify(fontObj);
         txtOut.value += JSON.stringify(colorObj);
 
-        chrome.action.setBadgeText({ text: 'Pass' });
+        chrome.action.setBadgeText({ text: 'Save' });
     });
 
     //Event Listener that clears the locally stored data
@@ -111,6 +111,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         txtOut.value = 'Preferences Loaded';
+        txtOut.value += JSON.stringify(fontObj);
+        txtOut.value += JSON.stringify(colorObj);
+        chrome.action.setBadgeText({ text: 'Load' });
+
     });
 
     //Event Listener to increase local tab's font size
@@ -242,13 +246,17 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                 }).then(injectionResults => {
                     for (const {frameId, result} of injectionResults) {
-                    //scriptResult = result;
-                    console.log(result);
-                    altObj.altNum = result.altNum;
-                    altObj.altSrc = result.altSrc;
-                    console.log(altObj);
-                    txtOut.value = `Number of Alt Text Missing: ${altObj.altNum} \nImage Sources:\n`
-                    txtOut.value += altObj.altSrc;
+                        console.log(result);
+                        altObj.altNum = result.altNum;
+                        altObj.altSrc = result.altSrc;
+                        console.log(altObj);
+                        txtOut.value = `Number of Alt Text Missing: ${altObj.altNum} \nImage Sources:\n`
+                        txtOut.value += altObj.altSrc;
+                        if(result.altNum !== 0){
+                            chrome.action.setBadgeText({text : "Fail"});
+                        } else {
+                            chrome.action.setBadgeText({text: "Pass"});
+                        }
                     }
                 });
             
