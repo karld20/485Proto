@@ -20,6 +20,8 @@
                 <div class="color-picker" style="margin-top:10px;">
                     <input type="color" id="colorpicker" value="#0000ff">
                 </div>
+                <input type="range" min="0" max="50" value="0" class="slider" step="10" id="graySlide">
+                <input type="range" min="75" max="110" value="100" class="slider" step="5" id="myRange">
                 <div class="btn" style="margin-top:10px;"><button class="btn" id="btnText">TEXT</button></div>
                 <div class="selector"><select name="fonts" id="fonts">
                     <option value="times">Times New Roman</option>
@@ -31,7 +33,7 @@
                 </select></div>
                 <div class="btn" style="margin-top:10px;"><button class="btn" id="btnAI">ALT/CAPTIONS</button></div>
                 <div class="btn" style="margin-top:10px;"><button class="btn" id="btnScan">SCAN</button></div>
-                <h2>Change Font Size</h2>
+                <h2 id="lblFontSize">Change Font Size</h2>
                 <div class="btn"><button class ='btn' id="btnDecrease">-</button></div>
                 <div class="btn" style="margin-top:5px;"><button class = 'btn' id="btnIncrease">+</button></div>
                 <div class="btn" style="margin-top:10px;"><button class="btn" id="btnSave">SAVE CHANGES</button></div>
@@ -40,12 +42,10 @@
                     Settings Display Here &#13;&#10;
                 </textarea>
                 <div class="btn" style="margin-top:10px;"><button class="btn" id="btnClear">CLEAR CHANGES</button></div>
-                <input type="range" min="75" max="110" value="100" class="slider" step="5" id="myRange">
                 <form>
                     <input type="radio" name="font" checked>Font Menu
                     <input type="radio" name="color">Color Menu
                 </form>
-                <input type="range" min="0" max="50" value="0" class="slider" step="10" id="graySlide">
                 
 
             </div>

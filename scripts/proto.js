@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnScan = document.getElementById('btnScan');
     const graySlide = document.getElementById('graySlide');
     const btnInfo = document.getElementById('btnInfo');
+    const lblFontSize = document.getElementById('lblFontSize');
+
 
     let currTab;
     let fontCSS = "";
@@ -38,6 +40,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Runs every time you click the extension button to get the current tab id
     getTabId();
+
+    runFile('scripts/scan.js');
+
+    chrome.action.setBadgeText({ text: '' });
+
+    
 
     
     btnInfo.addEventListener('click',()=>{
@@ -69,6 +77,8 @@ document.addEventListener('DOMContentLoaded', function() {
         txtOut.value = 'Changes Saved';
         txtOut.value += JSON.stringify(fontObj);
         txtOut.value += JSON.stringify(colorObj);
+
+        chrome.action.setBadgeText({ text: 'Pass' });
     });
 
     //Event Listener that clears the locally stored data
@@ -130,7 +140,9 @@ document.addEventListener('DOMContentLoaded', function() {
         btnDecrease.style.display = "inline";
         colorPick.style.display = "none";
         brightSelect.style.display = "none";
+        graySlide.style.display = "none";
         fntSelect.style.display = "inline";
+        lblFontSize.style.display = "inline";
     });
 
     //Event Listener that changes the font type 
@@ -173,6 +185,7 @@ document.addEventListener('DOMContentLoaded', function() {
         colorPick.style.display = "inline";
         brightSelect.style.display = "inline";
         fntSelect.style.display = "none";
+        lblFontSize.style.display = "none";
 
     });
 
@@ -181,8 +194,13 @@ document.addEventListener('DOMContentLoaded', function() {
         runFile('scripts/scan.js');
 
         chrome.storage.local.get(["noAlt"]).then((result)=>{
-            console.log(result.noAlt);
+            txtOut.value = JSON.stringify(result.noAlt);
+
+            if(result.noAlt === 0){
+                chrome.action.setBadgeText({text : "Fail"});
+            }
         });
+
 
     });
 
@@ -221,6 +239,18 @@ document.addEventListener('DOMContentLoaded', function() {
         txtOut.value = currTab;
 
         console.log('ranFunct');
+    }
+
+    async function runFile(fileName){
+        let queryOptions = {active: true, lastFocusedWindow: true};
+        // `tab` will either be a `tabs.Tab` instance or `undefined`.
+        let [tab] = await chrome.tabs.query(queryOptions);
+        currTab = tab.id;
+
+        chrome.scripting.executeScript({
+            target: {tabId: currTab},
+            files: [fileName]
+        });
     }
 
 /*
@@ -280,9 +310,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+
 /**
  *      ToDo:
- *     - Objects Save & Load & Apply
+ *     + Objects Save & Load & Apply 
  *     - Alt Text Object on Scan
  *     - Scan only scanning inside main
  *     - AI Alt Text using crowdsourced Stable Horde

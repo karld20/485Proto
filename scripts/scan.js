@@ -8,7 +8,7 @@ countNoAlt = 0;
 altText = "";
 
 //For loop that adds and collects the images with no alt text
-for (let i = 0; i < imageScame.length; i++){
+for (let i = 0; i < imageScan.length; i++){
     if(imageScan[i].alt === ""){
         countNoAlt += 1;
         altText[i] = imageScan[i].alt;
