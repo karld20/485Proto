@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
     let currTab;
     let fontCSS = "";
 
+    let scriptResult; 
+
     const brightSelect = document.getElementById('myRange');
 
     //Font Object to save settings
@@ -41,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
     //Runs every time you click the extension button to get the current tab id
     getTabId();
 
-    //runFile('scripts/scan.js');
 
     chrome.action.setBadgeText({ text: '' });
 
@@ -193,7 +194,8 @@ document.addEventListener('DOMContentLoaded', function() {
     btnScan.addEventListener('click',()=>{
         //runFile('scripts/scan.js');
         runScript(scanForImage);
-
+        txtOut.value = scriptResult;
+        /*
         chrome.storage.local.get(["noAlt"]).then((result)=>{
             txtOut.value = JSON.stringify(result.noAlt);
 
@@ -203,6 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 chrome.action.setBadgeText({text: "Pass"});
             }
         });
+        */
 
 
     });
@@ -229,8 +232,13 @@ document.addEventListener('DOMContentLoaded', function() {
             .executeScript({
                 target : {tabId : currTab},
                 func : funct,
-            })
-            .then(() => console.log ("injected a function"));
+                
+            }).then(injectionResults => {
+                for (const {frameId, result} of injectionResults) {
+                  scriptResult = result;
+                }
+              });
+            
     }
 
     //Function that gets the current tab ID; ran each time you open the extension
@@ -323,9 +331,13 @@ function scanForImage(){
             altText[i] = imageScan[i].alt;   
         }
     }
+
+    return countNoAlt;
+    /*
     chrome.storage.local.set({noAlt: countNoAlt}).then(()=>{
         console.log(`Lack of Alt Text value is set at ${countNoAlt}`);
     });
+    */
 }
 /**
  *      ToDo:
@@ -337,4 +349,5 @@ function scanForImage(){
  *     - Actual Disability Problems/Solutions [colorblind etc]
  *     - Downloaded fonts for better readability
  *     - Usability stuff like button outline etc.
+ *     - Potentially have getTabId() return tabId
  */
