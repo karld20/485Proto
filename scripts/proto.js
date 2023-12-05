@@ -17,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const lblFontSize = document.getElementById('lblFontSize');
     const btnAI = document.getElementById('btnAI');
     const brightSelect = document.getElementById('myRange');
+    const fontMenu = document.getElementById('fontMenu');
+    const colorMenu = document.getElementById('colorMenu');
 
     let currTab;
     let fontCSS = "";
@@ -61,12 +63,24 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Event Listener for the slider, changes brightness values
     brightSelect.addEventListener('input',()=>{
-        setPageBrightness(brightSelect.value);
+        if(colorObj.grayscale !== 0){
+            colorObj.bright = brightSelect.value;
+            txtOut.value = `Bright= ${colorObj.bright} Grayscale = ${colorObj.grayscale}`;
+            injectCSS(`*{filter: brightness(${colorObj.bright}%) grayscale(${colorObj.grayscale}%) !important;}`);
+        }else{
+            setPageBrightness(brightSelect.value);
+        }
     });
 
     //Event listener for the grayscale slider, changes grayscale values
     graySlide.addEventListener('input',()=>{
-        setPageGrayscale(graySlide.value);
+        if(colorObj.bright !== 100){
+            colorObj.grayscale = graySlide.value;
+            txtOut.value = `Bright= ${colorObj.bright} Grayscale = ${colorObj.grayscale}`;
+            injectCSS(`*{filter: brightness(${colorObj.bright}%) grayscale(${colorObj.grayscale}%) !important;}`);
+        }else{
+            setPageGrayscale(graySlide.value);
+        }
     });
 
     //Event Listener that saves the user's Font & Color settings to be reloaded
@@ -145,13 +159,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Event listener that shows the Font menu of options & Hides the Color options
     btnText.addEventListener('click',()=>{
-        btnIncrease.style.display = "inline";
-        btnDecrease.style.display = "inline";
-        colorPick.style.display = "none";
-        brightSelect.style.display = "none";
-        graySlide.style.display = "none";
-        fntSelect.style.display = "inline";
-        lblFontSize.style.display = "inline";
+        fontMenu.style.display = "initial";
+        colorMenu.style.display = "none";
     });
 
     //Event Listener that changes the font type 
@@ -189,13 +198,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Event Listener for the Color Button that shows the Color Menu of options
     btnColor.addEventListener('click',()=>{
-        btnIncrease.style.display = "none";
-        btnDecrease.style.display = "none";
-        colorPick.style.display = "inline";
-        brightSelect.style.display = "inline";
-        fntSelect.style.display = "none";
-        lblFontSize.style.display = "none";
-        graySlide.style.display = "inline";
+        fontMenu.style.display = "none";
+        colorMenu.style.display = "initial";
 
     });
 
