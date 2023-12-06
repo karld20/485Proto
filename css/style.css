@@ -4,75 +4,40 @@
     box-sizing: border-box;
     font-family: 'Poppins', sans-serif;
 }
-.container{
-    width: 400px;
-    height: 800px;
-    background: #C1E3EF;
-    display: flex;
-    align-items: center;
-    justify-content:center;
-}
-.btn{
-    padding: 10px 10px;
-    background: #8ecae6;
-    border: 0;
-    outline: none;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: 500;
-    border-radius: 10px;
-    text-align:center;
-}
-.popup{
-    width:400px;
-    background:#fff;
-    border-radius:6px;
-    position:absolute;
-    top:0;
-    left:50%;
-    transform:translate(-50%,-50%) scale(0.1);
-    text-align:center;
-    padding:0 30px 30px;
-    color:#333;
-    visibility: hidden;
-    transition: transform 0.4s, top 0.4s;
-}
-.open-popup{
-    visibility: visible;
-    top:50%;
-    transform: translate(-50%,-50%) scale(1);
-}
-.popup img{
-    width:100px;
-    margin-top:-50px;
-    border-radius:50%;
-    box-shadow: 0 2px 5px rgba(0,0,0,0);
-}
-.popup h2{
-    font-size:38px;
-    font-weight:500;
-    margin:30px 0 10px;
-}
-.popup button{
-    width:100%;
-    margin-top:50px;
-    padding:10px 0;
-    background:#6fd649;
-    color:#fff;
-    border: 0;
-    outline:none;
-    font-size:18px;
-    border-radius:4px;
-    cursor:pointer;
-    box-shadow: 0 5px 5px rgba(0,0,0,0);
-}
-.menu-options a{
+.click{
+    background-color: #000000;
+    border: none;
+    color: white;
+    padding: 5px 32px;
+    text-align: center;
     text-decoration: none;
-    color: #000;
-    display: block;
-    width: fit-content;
-    margin: 0;
-    font-size: 22px;
+    display: inline-block;
+    font-size: 16px;
     font-weight: bold;
+    width:100%;
+    transition-duration: 0.4s;
 }
-
+.size{
+    background-color:#000000;
+    border: none;
+    color: white;
+    padding: 5px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: bold;
+    width:100%;
+    transition-duration: 0.4s;
+}
+.click:hover{
+    background-color:#F0F0F0;
+    color:#000000;
+}
+.size:hover{
+    background-color:#eeeeee;
+    color:#000000;
+}
+.vertical-center{
+    margin-left: 43%;
+}
