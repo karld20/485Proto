@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const chkReport = document.getElementById('chkReport');
     const themesSelect = document.getElementById('themes');
     const fontPick = document.getElementById('fontpicker');
+    
+    let fcCheck = false;
 
     let url = "";
 
@@ -181,6 +183,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     themesSelect.addEventListener('change',()=>{
+        fcCheck = true;
         switch(themesSelect.value){
             case "whiteandblack":
                 setFullColor("#ffffff");
@@ -255,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     btnAI.addEventListener('click',()=>{
         txtOut.value = "Stay Tuned!";
-        //injectCSS(`*{foreground-color: Green !important}`);
+        injectCSS(`*{background-color: transparent !important}`);
     });
     
 
@@ -316,9 +319,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Setting values & updating CSS
     function setBackgroundColor(background){
-        colorObj.background = background;
-        injectCSS(`body { background-color: ${background} !important; }`);
-        //injectCSS(`* { background-color: ${background} !important; }`);
+        if(fcCheck === true){
+            colorObj.fullcolor = background;
+            injectCSS(`* { background-color: ${background} !important; }`);
+        }else{
+            colorObj.background = background;
+            injectCSS(`body { background-color: ${background} !important; }`);
+        }
+
     }
 
     function setPageBrightness(bright){
