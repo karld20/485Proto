@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', function() {
     brightSelect.addEventListener('input',()=>{
         if(colorObj.grayscale !== 0){
             colorObj.bright = brightSelect.value;
-            txtOut.value = `Bright= ${colorObj.bright} Grayscale = ${colorObj.grayscale}`;
+            txtOut.value = `Brightness= ${colorObj.bright} Grayscale = ${colorObj.grayscale}`;
             injectCSS(`*{filter: brightness(${colorObj.bright}%) grayscale(${colorObj.grayscale}%) !important;}`);
         }else{
             setPageBrightness(brightSelect.value);
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
     graySlide.addEventListener('input',()=>{
         if(colorObj.bright !== 100){
             colorObj.grayscale = graySlide.value;
-            txtOut.value = `Bright= ${colorObj.bright} Grayscale = ${colorObj.grayscale}`;
+            txtOut.value = `Brightness= ${colorObj.bright} Grayscale = ${colorObj.grayscale}`;
             injectCSS(`*{filter: brightness(${colorObj.bright}%) grayscale(${colorObj.grayscale}%) !important;}`);
         }else{
             setPageGrayscale(graySlide.value);
@@ -105,8 +105,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         txtOut.value = 'Changes Saved\n\n';
+        /*
         txtOut.value += JSON.stringify(fontObj);
         txtOut.value += JSON.stringify(colorObj);
+        */
 
         chrome.action.setBadgeText({ text: 'Save' });
     });
@@ -136,8 +138,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         txtOut.value = 'Preferences Loaded';
+        /*
         txtOut.value += JSON.stringify(fontObj);
         txtOut.value += JSON.stringify(colorObj);
+        */
         chrome.action.setBadgeText({ text: 'Load' });
 
     });
@@ -195,6 +199,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 setFontColor("#000000");
                 break;
         }
+        txtOut.value = "Theme Changed";
     });
 
     //Event Listener that changes the font type 
@@ -222,7 +227,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         fontCSS = `*{ font-family: '${fontObj.fontName}' !important; }`
         injectCSS(fontCSS);
-        txtOut.value = fontObj.fontName;
+        txtOut.value = `Font changed to ${fontObj.fontName}`;
     });
 
     //Event Listener for the color picker, sets picked color to CSS string and injects on tab
@@ -249,8 +254,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     btnAI.addEventListener('click',()=>{
-        //txtOut.value = "Stay Tuned!";
-        injectCSS(`*{foreground-color: Green !important}`);
+        txtOut.value = "Stay Tuned!";
+        //injectCSS(`*{foreground-color: Green !important}`);
     });
     
 
