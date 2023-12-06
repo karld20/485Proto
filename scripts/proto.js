@@ -19,10 +19,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const brightSelect = document.getElementById('myRange');
     const fontMenu = document.getElementById('fontMenu');
     const colorMenu = document.getElementById('colorMenu');
+    let url = "";
 
     let currTab;
     let fontCSS = "";
     let textOutput = "";
+    let passFail = "";
 
 
     //Font Object to save settings
@@ -44,7 +46,8 @@ document.addEventListener('DOMContentLoaded', function() {
     //Alt Text Object from Scan
     const altObj = {
         altNum: 0,
-        altSrc: []
+        altSrc: [],
+        pageTitle: ""
     }
 
     //Runs every time you click the extension button to get the current tab id
@@ -241,12 +244,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 }).then(injectionResults => {
                     for (const {frameId, result} of injectionResults) {
                         if(identifier === "AltText"){
-                            console.log(result);
-                        
+                            altObj.pageTitle = result.pageTitle;
                             altObj.altNum = result.altNum;
                             altObj.altSrc = result.altSrc;
-                            console.log(altObj);
-                            txtOut.value = `Number of Alt Text Missing: ${altObj.altNum} \nImage Sources:\n`;
+
+                            if(result.altNum !== 0){
+                                chrome.action.setBadgeText({text : "Fail"});
+                                passFail = "Fail";
+                            } else {
+                                chrome.action.setBadgeText({text: "Pass"});
+                                passFail = "Pass";
+                            }
+
+                            txtOut.value = `Scan Result: ${passFail} \nURL: ${url} \nTitle: ${altObj.pageTitle} \nNumber of Alt Text Missing: ${altObj.altNum} \nImage Sources:\n`;
                             for (let i = 0; i < altObj.altSrc.length; i++){
                                     txtOut.value += i+1 + ". " + altObj.altSrc[i] + "\n";
                             }
@@ -256,16 +266,9 @@ document.addEventListener('DOMContentLoaded', function() {
                             const link = document.createElement("a");
                             const file = new Blob([textOutput], { type: 'text/plain' });
                             link.href = URL.createObjectURL(file);
-                            link.download = "alt_text_scan_report.txt";
+                            link.download = `alttext_scan_report_${url}.txt`;
                             link.click();
                             URL.revokeObjectURL(link.href);
-
-                            if(result.altNum !== 0){
-                                chrome.action.setBadgeText({text : "Fail"});
-                            } else {
-                                chrome.action.setBadgeText({text: "Pass"});
-                            }
-
                         }
                     }
                 });
@@ -281,6 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log(`tab`);
         currTab = await tab.id;
         console.log(`id`);
+        url = tab.url;
     }
 
     function runFile(fileName){
@@ -356,8 +360,14 @@ function scanForImage(){
     //Alt text object to keep track of number of alt text missing as well as source of image
     const altObj = {
         altNum: 0,
-        altSrc: []
+        altSrc: [],
+        pageTitle: ""
     }
+
+    const titleScan = document.querySelectorAll("title");
+
+    altObj.pageTitle = titleScan[0].innerHTML;
+
     let j = 0;
     //For loop that adds and collects the images with no alt text
     for (let i = 0; i < imageScan.length; i++){
