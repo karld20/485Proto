@@ -197,9 +197,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 setFullColor("#808080");
                 setFontColor("#ffffff");
                 break;
-            case "grayandblack":
+            case "grayandgreen":
                 setFullColor("#808080");
-                setFontColor("#000000");
+                setFontColor("#22e508");
                 break;
         }
         txtOut.value = "Theme Changed";
