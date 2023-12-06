@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let currTab;
     let fontCSS = "";
+    let textOutput = "";
 
 
     //Font Object to save settings
@@ -247,9 +248,18 @@ document.addEventListener('DOMContentLoaded', function() {
                             console.log(altObj);
                             txtOut.value = `Number of Alt Text Missing: ${altObj.altNum} \nImage Sources:\n`;
                             for (let i = 0; i < altObj.altSrc.length; i++){
-                                    txtOut.value += i+1 + "\n" + altObj.altSrc[i] + "\n";
+                                    txtOut.value += i+1 + ". " + altObj.altSrc[i] + "\n";
                             }
-                            //txtOut.value += altObj.altSrc;
+                            
+                            textOutput = txtOut.value;
+
+                            const link = document.createElement("a");
+                            const file = new Blob([textOutput], { type: 'text/plain' });
+                            link.href = URL.createObjectURL(file);
+                            link.download = "alt_text_scan_report.txt";
+                            link.click();
+                            URL.revokeObjectURL(link.href);
+
                             if(result.altNum !== 0){
                                 chrome.action.setBadgeText({text : "Fail"});
                             } else {
