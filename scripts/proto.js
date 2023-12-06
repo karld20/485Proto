@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Event Listener that scans the current page for missing alt text
     btnScan.addEventListener('click',()=>{
-        runScript(scanForImage);
+        runScript(scanForImage, "AltText");
         
     });
 
@@ -231,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     //Function that allows you to run a script on the page
-    async function runScript(funct) {
+    async function runScript(funct, identifier) {
             chrome.scripting
                 .executeScript({
                     target : {tabId : currTab},
@@ -239,26 +239,34 @@ document.addEventListener('DOMContentLoaded', function() {
                     
                 }).then(injectionResults => {
                     for (const {frameId, result} of injectionResults) {
-                        console.log(result);
-                        altObj.altNum = result.altNum;
-                        altObj.altSrc = result.altSrc;
-                        console.log(altObj);
-                        txtOut.value = `Number of Alt Text Missing: ${altObj.altNum} \nImage Sources:\n`
-                        txtOut.value += altObj.altSrc;
-                        if(result.altNum !== 0){
-                            chrome.action.setBadgeText({text : "Fail"});
-                        } else {
-                            chrome.action.setBadgeText({text: "Pass"});
+                        if(identifier === "AltText"){
+                            console.log(result);
+                        
+                            altObj.altNum = result.altNum;
+                            altObj.altSrc = result.altSrc;
+                            console.log(altObj);
+                            txtOut.value = `Number of Alt Text Missing: ${altObj.altNum} \nImage Sources:\n`;
+                            for (let i = 0; i < altObj.altSrc.length; i++){
+                                    txtOut.value += i+1 + "\n" + altObj.altSrc[i] + "\n";
+                            }
+                            //txtOut.value += altObj.altSrc;
+                            if(result.altNum !== 0){
+                                chrome.action.setBadgeText({text : "Fail"});
+                            } else {
+                                chrome.action.setBadgeText({text: "Pass"});
+                            }
+
                         }
                     }
                 });
             
     }
 
+
+
     //Function that gets the current tab ID; ran each time you open the extension
     async function getTabId(){
         let queryOptions = {active: true, lastFocusedWindow: true};
-        // `tab` will either be a `tabs.Tab` instance or `undefined`.
         let [tab] = await chrome.tabs.query(queryOptions);
         console.log(`tab`);
         currTab = await tab.id;
@@ -293,7 +301,8 @@ document.addEventListener('DOMContentLoaded', function() {
     //Setting values & updating CSS
     function setBackgroundColor(background){
         colorObj.background = background;
-        injectCSS(`body { background-color: ${background} !important; }`);
+        //injectCSS(`body { background-color: ${background} !important; }`);
+        injectCSS(`* { background-color: ${background} !important; }`);
     }
 
     function setPageBrightness(bright){
@@ -339,12 +348,15 @@ function scanForImage(){
         altNum: 0,
         altSrc: []
     }
+    let j = 0;
     //For loop that adds and collects the images with no alt text
     for (let i = 0; i < imageScan.length; i++){
-        if(imageScan[i].alt === ""){
+        if(imageScan[i].alt === "" && imageScan[i].ariaHidden !== "true" && imageScan[i].display !== "none" && 
+        imageScan[i].naturalWidth !== 1 && imageScan[i].currentSrc !== "" && imageScan[i].naturalWidth !== 0 && imageScan[i].height !== 1){
             altObj.altNum += 1;
             //altText[i] = imageScan[i].alt;
-            altObj.altSrc[i] = imageScan[i].currentSrc;
+            altObj.altSrc[j] = imageScan[i].currentSrc;
+            j++
         }
     }
     console.log(altObj);
