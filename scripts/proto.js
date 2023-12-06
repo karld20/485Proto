@@ -258,7 +258,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     btnAI.addEventListener('click',()=>{
         txtOut.value = "Stay Tuned!";
-        injectCSS(`*{background-color: transparent !important}`);
     });
     
 
