@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const fontMenu = document.getElementById('fontMenu');
     const colorMenu = document.getElementById('colorMenu');
     const chkReport = document.getElementById('chkReport');
+    const themesSelect = document.getElementById('themes');
+    const fontPick = document.getElementById('fontpicker');
 
     let url = "";
 
@@ -52,6 +54,8 @@ document.addEventListener('DOMContentLoaded', function() {
         pageTitle: ""
     }
 
+    fontMenu.style.display = "none";
+    colorMenu.style.display = "none";
     //Runs every time you click the extension button to get the current tab id
     getTabId();
 
@@ -170,6 +174,27 @@ document.addEventListener('DOMContentLoaded', function() {
         colorMenu.style.display = "none";
     });
 
+    themesSelect.addEventListener('change',()=>{
+        switch(themesSelect.value){
+            case "whiteandblack":
+                injectCSS(`*{background-color: #ffffff !important};`);
+                injectCSS(`*{color: #000000 !important}`);
+                break;
+            case "blackandwhite":
+                injectCSS(`*{background-color: #000000 !important};`);
+                injectCSS(`*{color: #ffffff !important}`);
+                break;
+            case "grayandwhite":
+                injectCSS(`*{background-color: #808080 !important};`);
+                injectCSS(`*{color: #ffffff !important}`);
+                break;
+            case "grayandblack":
+                injectCSS(`*{background-color: #808080 !important};`);
+                injectCSS(`*{color: #000000 !important}`);
+                break;
+        }
+    });
+
     //Event Listener that changes the font type 
     fntSelect.addEventListener('change',()=>{
         fontObj.fontId = fntSelect.value;
@@ -201,6 +226,10 @@ document.addEventListener('DOMContentLoaded', function() {
     //Event Listener for the color picker, sets picked color to CSS string and injects on tab
     colorPick.addEventListener('input',() =>{
         setBackgroundColor(colorPick.value);
+    });
+
+    fontPick.addEventListener('input',()=>{
+        setFontColor(fontPick.value);
     });
 
     //Event Listener for the Color Button that shows the Color Menu of options
@@ -302,7 +331,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function setFontColor(color){
         fontObj.color = color;
-        //injectCSS(``);
+        injectCSS(`*{color: ${fontObj.color} !important;}`);
     }
 
     function setFontName(name){
@@ -393,9 +422,12 @@ function scanForSubtitles(){
 }
 /**
  *      ToDo:
- *     - AI Alt Text using crowdsourced Stable Horde [Unfeasable]
- *     - Disability Problems/Solutions [color & text themes]
- *     - Downloaded fonts for better readability
- *     - Usability stuff like button outline etc.
+ *     - Bug Fixing [Font size mostly]
+ *     - Disability Problems/Solutions [color & text themes] [if time]
+ *     - Save Themes
+ *     - Extension CSS
  * 
+ *     - Usability stuff like button outline etc. [Unlikely]
+ *     - Downloaded fonts for better readability [Unlikely]
+ *     - AI Alt Text using crowdsourced Stable Horde [Unfeasable]
  */

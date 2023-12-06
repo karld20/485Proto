@@ -21,9 +21,21 @@
                 <div class="btn" style="margin-top:10px;"><button class="btn" id="btnText">TEXT MENU</button></div>
             </div>
             <div class ="color-options" id="colorMenu">
+
+                <div class="selector"><select name="themes" id="themes">
+                    <option value="blackandwhite">Black And White</option>
+                    <option value="grayandwhite">Gray and White</option>
+                    <option value="whiteandblack">White and Black</option>
+                    <option value="grayandblack">Gray and Black</option>
+                </select></div>
+
                 <label for="colorpicker"> Click to change background color</label><br>
                 <div class="color-picker" style="margin-top:10px;">
                     <input type="color" id="colorpicker" value="#0000ff" name="colorpicker">
+                </div>
+                <label for="fontpicker"> Click to change font color</label><br>
+                <div class="color-picker" style="margin-top:10px;">
+                    <input type="color" id="fontpicker" value="#0000ff" name="fontpicker">
                 </div>
                 <input type="range" min="0" max="100" value="0" class="slider" step="20" id="graySlide">
                 <input type="range" min="75" max="110" value="100" class="slider" step="5" id="myRange">
@@ -38,8 +50,8 @@
                     <option value="atkinson">Atkinson Hyperlegible</option>
                 </select></div>
                 <h2 id="lblFontSize">Change Font Size</h2>
-                <div class="btn"><button class ='btn' id="btnDecrease">-</button></div>
-                <div class="btn" style="margin-top:5px;"><button class = 'btn' id="btnIncrease">+</button></div>
+                <div class="btn"><button class ='btn' id="btnDecrease">(-)Decrease Font Size</button></div>
+                <div class="btn" style="margin-top:5px;"><button class = 'btn' id="btnIncrease">(+)Increase Font Size</button></div>
             </div>
             <div class="btn" style="margin-top:10px;"><button class="btn" id="btnAI">ALT/CAPTIONS</button></div>
             <input type="checkbox" id="chkReport" name="chkReport" value="Report">
