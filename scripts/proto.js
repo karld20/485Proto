@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //Font Object to save settings
     const fontObj = {
         size: 18,
-        color: "",  //haven't finished this yet
+        color: "",
         name: "",
         fontId: "",
     }
@@ -45,6 +45,7 @@ document.addEventListener('DOMContentLoaded', function() {
         background: "",
         grayscale: 0,
         colorId: "",
+        fullcolor: ""
     }
 
     //Alt Text Object from Scan
@@ -121,6 +122,7 @@ document.addEventListener('DOMContentLoaded', function() {
         txtOut.value = '';
         chrome.storage.local.get(["colorObject"]).then((result) => {
             setBackgroundColor(result.colorObject.background);
+            setFullColor(result.colorObject.fullcolor);
             setPageBrightness(result.colorObject.bright);
             setPageGrayscale(result.colorObject.grayscale);
             setPageFilters(result.colorObject.bright, result.colorObject.grayscale);
@@ -177,20 +179,20 @@ document.addEventListener('DOMContentLoaded', function() {
     themesSelect.addEventListener('change',()=>{
         switch(themesSelect.value){
             case "whiteandblack":
-                injectCSS(`*{background-color: #ffffff !important};`);
-                injectCSS(`*{color: #000000 !important}`);
+                setFullColor("#ffffff");
+                setFontColor("#000000");
                 break;
             case "blackandwhite":
-                injectCSS(`*{background-color: #000000 !important};`);
-                injectCSS(`*{color: #ffffff !important}`);
+                setFullColor("#000000");
+                setFontColor("#ffffff");
                 break;
             case "grayandwhite":
-                injectCSS(`*{background-color: #808080 !important};`);
-                injectCSS(`*{color: #ffffff !important}`);
+                setFullColor("#808080");
+                setFontColor("#ffffff");
                 break;
             case "grayandblack":
-                injectCSS(`*{background-color: #808080 !important};`);
-                injectCSS(`*{color: #000000 !important}`);
+                setFullColor("#808080");
+                setFontColor("#000000");
                 break;
         }
     });
@@ -350,6 +352,11 @@ document.addEventListener('DOMContentLoaded', function() {
         colorObj.grayscale = grayscale;
 
         injectCSS(`*{filter: brightness(${colorObj.bright}%) grayscale(${colorObj.grayscale}%) !important;}`);
+    }
+
+    function setFullColor(fullcolor){
+        colorObj.fullcolor = fullcolor;
+        injectCSS(`*{background-color: ${colorObj.fullcolor} !important;}`);
     }
 
     function processAltText(result){
