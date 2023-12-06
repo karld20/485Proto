@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const brightSelect = document.getElementById('myRange');
     const fontMenu = document.getElementById('fontMenu');
     const colorMenu = document.getElementById('colorMenu');
+    const chkReport = document.getElementById('chkReport');
+
     let url = "";
 
     let currTab;
@@ -29,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Font Object to save settings
     const fontObj = {
-        size: 16,
+        size: 18,
         color: "",  //haven't finished this yet
         name: "",
         fontId: "",
@@ -117,6 +119,7 @@ document.addEventListener('DOMContentLoaded', function() {
             setBackgroundColor(result.colorObject.background);
             setPageBrightness(result.colorObject.bright);
             setPageGrayscale(result.colorObject.grayscale);
+            setPageFilters(result.colorObject.bright, result.colorObject.grayscale);
         });
 
         chrome.storage.local.get(["fontObject"]).then((result) => {
@@ -210,11 +213,13 @@ document.addEventListener('DOMContentLoaded', function() {
     //Event Listener that scans the current page for missing alt text
     btnScan.addEventListener('click',()=>{
         runScript(scanForImage, "AltText");
+        //runScript(scanForSubtitles,"Subtitles");
         
     });
 
     btnAI.addEventListener('click',()=>{
-        txtOut.value = "Stay Tuned!";
+        //txtOut.value = "Stay Tuned!";
+        injectCSS(`*{foreground-color: Green !important}`);
     });
     
 
@@ -244,31 +249,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 }).then(injectionResults => {
                     for (const {frameId, result} of injectionResults) {
                         if(identifier === "AltText"){
-                            altObj.pageTitle = result.pageTitle;
-                            altObj.altNum = result.altNum;
-                            altObj.altSrc = result.altSrc;
+                            processAltText(result);
+                        } 
+                        else if(identifier === "Subtitles"){
 
-                            if(result.altNum !== 0){
-                                chrome.action.setBadgeText({text : "Fail"});
-                                passFail = "Fail";
-                            } else {
-                                chrome.action.setBadgeText({text: "Pass"});
-                                passFail = "Pass";
-                            }
-
-                            txtOut.value = `Scan Result: ${passFail} \nURL: ${url} \nTitle: ${altObj.pageTitle} \nNumber of Alt Text Missing: ${altObj.altNum} \nImage Sources:\n`;
-                            for (let i = 0; i < altObj.altSrc.length; i++){
-                                    txtOut.value += i+1 + ". " + altObj.altSrc[i] + "\n";
-                            }
-                            
-                            textOutput = txtOut.value;
-
-                            const link = document.createElement("a");
-                            const file = new Blob([textOutput], { type: 'text/plain' });
-                            link.href = URL.createObjectURL(file);
-                            link.download = `alttext_scan_report_${url}.txt`;
-                            link.click();
-                            URL.revokeObjectURL(link.href);
                         }
                     }
                 });
@@ -294,29 +278,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-/*
-    function getTextInstances(){
-        let textInstances = document.querySelectorAll("h1");
-        textInstances.forEach(function(entry){
-            console.log(entry.innerText);
-        });
-        txtOut.value = `${textInstances[0].innerText}`;
-        textInstances[0].style.fontSize = `5px`;
-    }
-
-    function getButtonInstances(){
-        let btnInstances = document.querySelectorAll("button");
-        btnInstances.forEach(function(entry){
-            txtOut.value += (entry.innerText) + ' ';
-        });
-    }
-*/
-
     //Setting values & updating CSS
     function setBackgroundColor(background){
         colorObj.background = background;
-        //injectCSS(`body { background-color: ${background} !important; }`);
-        injectCSS(`* { background-color: ${background} !important; }`);
+        injectCSS(`body { background-color: ${background} !important; }`);
+        //injectCSS(`* { background-color: ${background} !important; }`);
     }
 
     function setPageBrightness(bright){
@@ -348,6 +314,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function setFontId(fontId){
         fontObj.fontId = fontId;
+    }
+
+    function setPageFilters(bright, grayscale){
+        colorObj.bright = bright;
+        colorObj.grayscale = grayscale;
+
+        injectCSS(`*{filter: brightness(${colorObj.bright}%) grayscale(${colorObj.grayscale}%) !important;}`);
+    }
+
+    function processAltText(result){
+        altObj.pageTitle = result.pageTitle;
+        altObj.altNum = result.altNum;
+        altObj.altSrc = result.altSrc;
+
+        if(result.altNum !== 0){
+            chrome.action.setBadgeText({text : "Fail"});
+            passFail = "Fail";
+        } else {
+            chrome.action.setBadgeText({text: "Pass"});
+            passFail = "Pass";
+        }
+
+        txtOut.value = `Scan Result: ${passFail} \nURL: ${url} \nTitle: ${altObj.pageTitle} \nNumber of Alt Text Missing: ${altObj.altNum} \nImage Sources:\n`;
+        for (let i = 0; i < altObj.altSrc.length; i++){
+                txtOut.value += i+1 + ". " + altObj.altSrc[i] + "\n";
+        }
+        
+        textOutput = txtOut.value;
+        if(chkReport.checked == true){
+            const link = document.createElement("a");
+            const file = new Blob([textOutput], { type: 'text/plain' });
+            link.href = URL.createObjectURL(file);
+            link.download = `alttext_scan_report_${url}.txt`;
+            link.click();
+            URL.revokeObjectURL(link.href);
+        }
     }
 
 });
@@ -384,9 +386,13 @@ function scanForImage(){
     return altObj;
 
 }
+
+function scanForSubtitles(){
+    const subScan = document.querySelectorAll("video");
+    console.log(subScan);
+}
 /**
  *      ToDo:
- *     - Scan only scanning inside main [Maybe]
  *     - AI Alt Text using crowdsourced Stable Horde [Unfeasable]
  *     - Disability Problems/Solutions [color & text themes]
  *     - Downloaded fonts for better readability
