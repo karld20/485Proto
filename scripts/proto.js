@@ -257,6 +257,9 @@ document.addEventListener('DOMContentLoaded', function() {
     btnColor.addEventListener('click',()=>{
         fontMenu.style.display = "none";
         colorMenu.style.display = "initial";
+
+        chkSlow.checked = true;
+        injectCSS(`*{transition-delay: .23s !important;}`);
     });
 
     //Event Listener that scans the current page for missing alt text
