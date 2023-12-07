@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const chkReport = document.getElementById('chkReport');
     const themesSelect = document.getElementById('themes');
     const fontPick = document.getElementById('fontpicker');
+    const chkSlow = document.getElementById('chkSlow');
     
     let fcCheck = false;
 
@@ -57,6 +58,9 @@ document.addEventListener('DOMContentLoaded', function() {
         pageTitle: ""
     }
 
+    
+    
+
     fontMenu.style.display = "none";
     colorMenu.style.display = "none";
     //Runs every time you click the extension button to get the current tab id
@@ -64,6 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Clears badge text when clicking the icon
     chrome.action.setBadgeText({ text: '' });
+
 
     
 
@@ -115,6 +120,14 @@ document.addEventListener('DOMContentLoaded', function() {
         chrome.action.setBadgeText({ text: 'Save' });
     });
 
+    chkSlow.addEventListener('change',()=>{
+        if(chkSlow.checked == true){
+            injectCSS(`*{transition-delay: .23s !important;}`);
+        }else{
+            injectCSS(`*{transition-delay: 0s !important;}`);
+        }
+    });
+
     //Event Listener that clears the locally stored data
     btnClear.addEventListener('click',()=>{
         chrome.storage.local.clear();
@@ -133,7 +146,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         chrome.storage.local.get(["fontObject"]).then((result) => {
-            setFontSize(result.fontObject.size);
+            if(result.fontObject.size !== 18){
+                setFontSize(result.fontObject.size);
+        }
             setFontColor(result.fontObject.color);
             setFontName(result.fontObject.name);
             setFontId(result.fontObject.fontId);
@@ -242,7 +257,6 @@ document.addEventListener('DOMContentLoaded', function() {
     btnColor.addEventListener('click',()=>{
         fontMenu.style.display = "none";
         colorMenu.style.display = "initial";
-
     });
 
     //Event Listener that scans the current page for missing alt text
@@ -314,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Setting values & updating CSS
     function setBackgroundColor(background){
-        
+
         if(fcCheck === true){
             colorObj.fullcolor = background;
             injectCSS(`* { background-color: ${background} !important; }`);
