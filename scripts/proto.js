@@ -209,10 +209,6 @@ document.addEventListener('DOMContentLoaded', function() {
     fntSelect.addEventListener('change',()=>{
         fontObj.fontId = fntSelect.value;
         switch(fontObj.fontId){
-            //this font doesn't work yet
-            case "atkinson":
-                fontObj.fontName = `Atkinson Hyperlegible`;
-                break;
             case "times":
                 fontObj.fontName = `Times New Roman`;
                 break;
@@ -318,6 +314,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Setting values & updating CSS
     function setBackgroundColor(background){
+        
         if(fcCheck === true){
             colorObj.fullcolor = background;
             injectCSS(`* { background-color: ${background} !important; }`);
