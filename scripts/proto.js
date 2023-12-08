@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
         color: "",
         name: "",
         fontId: "",
+        default: true
     }
 
     //Color Object to save settings
@@ -111,11 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Font is set");
         });
 
-        txtOut.value = 'Changes Saved\n\n';
-        /*
-        txtOut.value += JSON.stringify(fontObj);
-        txtOut.value += JSON.stringify(colorObj);
-        */
+        txtOut.value = 'Changes Saved';
 
         chrome.action.setBadgeText({ text: 'Save' });
     });
@@ -150,15 +147,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 setFontSize(result.fontObject.size);
         }
             setFontColor(result.fontObject.color);
+            console.log(result.fontObject.name);
             setFontName(result.fontObject.name);
             setFontId(result.fontObject.fontId);
         });
-
+        console.log(fontObj)
         txtOut.value = 'Preferences Loaded';
-        /*
-        txtOut.value += JSON.stringify(fontObj);
-        txtOut.value += JSON.stringify(colorObj);
-        */
+
+        
         chrome.action.setBadgeText({ text: 'Load' });
 
     });
@@ -225,23 +221,23 @@ document.addEventListener('DOMContentLoaded', function() {
         fontObj.fontId = fntSelect.value;
         switch(fontObj.fontId){
             case "times":
-                fontObj.fontName = `Times New Roman`;
+                fontObj.name = `Times New Roman`;
                 break;
             case "arial":
-                fontObj.fontName = `Arial`;
+                fontObj.name = `Arial`;
                 break;
             case "tahoma":
-                fontObj.fontName = `Tahoma`;
+                fontObj.name = `Tahoma`;
                 break;
             case "verdana":
-                fontObj.fontName = `Verdana`;
+                fontObj.name = `Verdana`;
                 break;
             default:
-                fontObj.fontName = `Times New Roman`;
+                fontObj.name = `Times New Roman`;
         }
-        fontCSS = `*{ font-family: '${fontObj.fontName}' !important; }`
+        fontCSS = `*{ font-family: '${fontObj.name}' !important; }`
         injectCSS(fontCSS);
-        txtOut.value = `Font changed to ${fontObj.fontName}`;
+        txtOut.value = `Font changed to ${fontObj.name}`;
     });
 
     //Event Listener for the color picker, sets picked color to CSS string and injects on tab
@@ -365,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function setFontName(name){
         fontObj.name = name;
         if(name !== ''){
-            injectCSS(`*{ font-family: '${fontObj.fontName}' !important; }`);
+            injectCSS(`*{ font-family: '${fontObj.name}' !important; }`);
         }
     }
 
