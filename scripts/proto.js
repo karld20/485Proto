@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const themesSelect = document.getElementById('themes');
     const fontPick = document.getElementById('fontpicker');
     const chkSlow = document.getElementById('chkSlow');
-    const chkGlobal = document.getElementById('chkGlobal');
+    // const chkGlobal = document.getElementById('chkGlobal');
     
     let fcCheck = false;
 
@@ -162,22 +162,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     //Event Listener to increase local tab's font size
     btnIncrease.addEventListener('click',()=>{
-        if(chkGlobal.checked == true){
-            changeFont('add');
-        }else{
+        //if(chkGlobal.checked == true){
+            //changeFont('add');
+       // }else{
             fontObj.size++;
             setFontSize(fontObj.size);
-        }
+       // }
     });
     
     //Event Listener to decrease local tab's font size
     btnDecrease.addEventListener('click',()=>{
-        if(chkGlobal.checked == true){
-            changeFont('minus');
-        }else{
+      //  if(chkGlobal.checked == true){
+            //changeFont('minus');
+       // }else{
             fontObj.size--;
             setFontSize(fontObj.size);
-        }
+       // }
     });
 
     //Function that changes the Global Browser font size
